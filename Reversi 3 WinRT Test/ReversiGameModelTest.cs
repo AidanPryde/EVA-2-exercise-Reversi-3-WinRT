@@ -4,6 +4,8 @@ using Reversi_WinRT.Persistence;
 
 using System;
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Reversi_WinRT_Test
 {
@@ -54,23 +56,22 @@ namespace Reversi_WinRT_Test
         private ReversiUpdateTableEventArgs _lastUpdateArg;
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiModelException))]
         public void ReversiGameModelNewGameInitializeOddTest()
         {
             Int32[] wrongGameTableSizesArray = new Int32[] { 10, 15, 20 }; // <- 15
 
             _dataAccess = new ReversiFileDataAccess(wrongGameTableSizesArray);
-            _model = new ReversiGameModel(_dataAccess, _tableSizeDefaultSetting);
+
+            Assert.ThrowsException<ReversiModelException>(() => _model = new ReversiGameModel(_dataAccess, _tableSizeDefaultSetting));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiModelException))]
         public void ReversiGameModelNewGameInitializeTooSmallTest()
         {
             Int32[] wrongGameTableSizesArray = new Int32[] { 10, 2, 20 }; // <- 2
 
             _dataAccess = new ReversiFileDataAccess(wrongGameTableSizesArray);
-            _model = new ReversiGameModel(_dataAccess, _tableSizeDefaultSetting);
+            Assert.ThrowsException<ReversiModelException>(() => _model = new ReversiGameModel(_dataAccess, _tableSizeDefaultSetting));
         }
 
         [TestInitialize]
@@ -169,220 +170,193 @@ namespace Reversi_WinRT_Test
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
-        public async Task ReversiGameModelNewGameLoadEmptyFileTest()
+        public void ReversiGameModelNewGameLoadEmptyFileTest()
         {
             // Zero or one line file.
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/empty file.reversi");
+            Assert.ThrowsException<NullReferenceException>(async () => await _model.LoadGame("../../Resources/empty file.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
-        public async Task ReversiGameModelNewGameLoadLessPutDownThenPutDownSizeTest()
+        public void ReversiGameModelNewGameLoadLessPutDownThenPutDownSizeTest()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/less put down then put down size.reversi");
+            Assert.ThrowsException<NullReferenceException>(async () => await _model.LoadGame("../../Resources/less put down then put down size.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(IndexOutOfRangeException))]
-        public async Task ReversiGameModelNewGameLoadNoPlayer2TimePutDownSizeTest()
+        public void ReversiGameModelNewGameLoadNoPlayer2TimePutDownSizeTest()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/no player 2 time and put down size.reversi");
+            Assert.ThrowsException<IndexOutOfRangeException>(async () => await _model.LoadGame("../../Resources/no player 2 time and put down size.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(IndexOutOfRangeException))]
-        public async Task ReversiGameModelNewGameLoadNoPlayersTimePutDownSizeTest()
+        public void ReversiGameModelNewGameLoadNoPlayersTimePutDownSizeTest()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/no players time and put down size.reversi");
+            Assert.ThrowsException<IndexOutOfRangeException>(async () => await _model.LoadGame("../../Resources/no players time and put down size.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(IndexOutOfRangeException))]
-        public async Task ReversiGameModelNewGameLoadNoPutDownSizeTest()
+        public void ReversiGameModelNewGameLoadNoPutDownSizeTest()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/no put down size.reversi");
+            Assert.ThrowsException<IndexOutOfRangeException>(async () => await _model.LoadGame("../../Resources/no put down size.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongOddPutDownSizeTest()
+        public void ReversiGameModelNewGameLoadWrongOddPutDownSizeTest()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong odd put down size.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong odd put down size.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongePlayer1TimeTest()
+        public void ReversiGameModelNewGameLoadWrongePlayer1TimeTest()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong player 1 time.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong player 1 time.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongePlayer2TimeTest()
+        public void ReversiGameModelNewGameLoadWrongePlayer2TimeTest()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong player 2 time.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong player 2 time.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongePlayersTimeTest()
+        public void ReversiGameModelNewGameLoadWrongePlayersTimeTest()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong players time.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong players time.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeStepMinus1Instead3Or4Test()
+        public void ReversiGameModelNewGameLoadWrongeStepMinus1Instead3Or4Test()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong step -1 instead 3 or 4.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong step -1 instead 3 or 4.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeStepMinus1Instead6Or4Test()
+        public void ReversiGameModelNewGameLoadWrongeStepMinus1Instead6Or4Test()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong step -1 instead 6 or 4.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong step -1 instead 6 or 4.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeStepMinus1InsteadPassTest()
+        public void ReversiGameModelNewGameLoadWrongeStepMinus1InsteadPassTest()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong step -1 instead pass.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong step -1 instead pass.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeStep0Instead3Or4Test()
+        public void ReversiGameModelNewGameLoadWrongeStep0Instead3Or4Test()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong step 0 instead 3 or 4.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong step 0 instead 3 or 4.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeStep0Instead6Or4Test()
+        public void ReversiGameModelNewGameLoadWrongeStep0Instead6Or4Test()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong step 0 instead 6 or 4.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong step 0 instead 6 or 4.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeStep1Instead3Or4Test()
+        public void ReversiGameModelNewGameLoadWrongeStep1Instead3Or4Test()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong step 1 instead 3 or 4.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong step 1 instead 3 or 4.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeStep1Instead6Or4Test()
+        public void ReversiGameModelNewGameLoadWrongeStep1Instead6Or4Test()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong step 1 instead 6 or 4.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong step 1 instead 6 or 4.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeStep1InsteadPassTest()
+        public void ReversiGameModelNewGameLoadWrongeStep1InsteadPassTest()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong step 1 instead pass.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong step 1 instead pass.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeStep3Instead6Or4Test()
+        public void ReversiGameModelNewGameLoadWrongeStep3Instead6Or4Test()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong step 3 instead 6 or 4.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong step 3 instead 6 or 4.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeStep3InsteadPassTest()
+        public void ReversiGameModelNewGameLoadWrongeStep3InsteadPassTest()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong step 3 instead pass.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong step 3 instead pass.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeStep5Instead3Or4Test()
+        public void ReversiGameModelNewGameLoadWrongeStep5Instead3Or4Test()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong step 5 instead 3 or 4.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong step 5 instead 3 or 4.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeStep5Instead6Or4Test()
+        public void ReversiGameModelNewGameLoadWrongeStep5Instead6Or4Test()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong step 5 instead 6 or 4.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong step 5 instead 6 or 4.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeStep6Instead3Or4Test()
+        public void ReversiGameModelNewGameLoadWrongeStep6Instead3Or4Test()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong step 6 instead 3 or 4.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong step 6 instead 3 or 4.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeStep6InsteadPassTest()
+        public void ReversiGameModelNewGameLoadWrongeStep6InsteadPassTest()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong step 6 instead pass.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong step 6 instead pass.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeStepPassInstead3Or4Test()
+        public void ReversiGameModelNewGameLoadWrongeStepPassInstead3Or4Test()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong step pass instead 3 or 4.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong step pass instead 3 or 4.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeStepPassInstead6Or4Test()
+        public void ReversiGameModelNewGameLoadWrongeStepPassInstead6Or4Test()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong step pass instead 6 or 4.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong step pass instead 6 or 4.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeTableSizeTest()
+        public void ReversiGameModelNewGameLoadWrongeTableSizeTest()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong table size.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong table size.reversi"));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ReversiDataException))]
-        public async Task ReversiGameModelNewGameLoadWrongeTooBigPutDownSizeTest()
+        public void ReversiGameModelNewGameLoadWrongeTooBigPutDownSizeTest()
         {
             _simpleEvents = true;
-            await _model.LoadGame("../../Resources/wrong too big put down size.reversi");
+            Assert.ThrowsException<ReversiDataException>(async () => await _model.LoadGame("../../Resources/wrong too big put down size.reversi"));
         }
 
         [TestMethod]
@@ -428,13 +402,13 @@ namespace Reversi_WinRT_Test
             }
 
 
-            Debug.Print(_maximumPossiblePutDownsSize.ToString());
-            Debug.Print(_maximumReversedPutDownsSize.ToString());
-            Debug.Print(_possibleGameCount.ToString());
-            Debug.Print(_maximumPassingCount.ToString());
-            Debug.Print(_possibleResults[0].ToString());
-            Debug.Print(_possibleResults[1].ToString());
-            Debug.Print(_possibleResults[2].ToString());
+            Debug.WriteLine(_maximumPossiblePutDownsSize);
+            Debug.WriteLine(_maximumReversedPutDownsSize);
+            Debug.WriteLine(_possibleGameCount);
+            Debug.WriteLine(_maximumPassingCount);
+            Debug.WriteLine(_possibleResults[0]);
+            Debug.WriteLine(_possibleResults[1]);
+            Debug.WriteLine(_possibleResults[2]);
 
 
             /*
