@@ -115,6 +115,7 @@
     <SDKReference Include="TestPlatform, Version=14.0" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssertEx.cs" />
     <Compile Include="ReversiGameModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -122,6 +123,34 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="Resources\empty file.reversi" />
+    <None Include="Resources\less put down then put down size.reversi" />
+    <None Include="Resources\no player 2 time and put down size.reversi" />
+    <None Include="Resources\no players time and put down size.reversi" />
+    <None Include="Resources\no put down size.reversi" />
+    <None Include="Resources\ok 0 step.reversi" />
+    <None Include="Resources\wrong odd put down size.reversi" />
+    <None Include="Resources\wrong player 1 time.reversi" />
+    <None Include="Resources\wrong player 2 time.reversi" />
+    <None Include="Resources\wrong players time.reversi" />
+    <None Include="Resources\wrong step -1 instead 3 or 4.reversi" />
+    <None Include="Resources\wrong step -1 instead 6 or 4.reversi" />
+    <None Include="Resources\wrong step -1 instead pass.reversi" />
+    <None Include="Resources\wrong step 0 instead 3 or 4.reversi" />
+    <None Include="Resources\wrong step 0 instead 6 or 4.reversi" />
+    <None Include="Resources\wrong step 1 instead 3 or 4.reversi" />
+    <None Include="Resources\wrong step 1 instead 6 or 4.reversi" />
+    <None Include="Resources\wrong step 1 instead pass.reversi" />
+    <None Include="Resources\wrong step 3 instead 6 or 4.reversi" />
+    <None Include="Resources\wrong step 3 instead pass.reversi" />
+    <None Include="Resources\wrong step 5 instead 3 or 4.reversi" />
+    <None Include="Resources\wrong step 5 instead 6 or 4.reversi" />
+    <None Include="Resources\wrong step 6 instead 3 or 4.reversi" />
+    <None Include="Resources\wrong step 6 instead pass.reversi" />
+    <None Include="Resources\wrong step pass instead 3 or 4.reversi" />
+    <None Include="Resources\wrong step pass instead 6 or 4.reversi" />
+    <None Include="Resources\wrong table size.reversi" />
+    <None Include="Resources\wrong too big put down size.reversi" />
     <None Include="Reversi 3 WinRT Test_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

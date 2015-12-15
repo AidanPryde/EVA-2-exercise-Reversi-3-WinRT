@@ -129,7 +129,11 @@ namespace Reversi_WinRT.Model
         /// </summary>
         public void Stop()
         {
-            _timer.Cancel();
+            if (_timer != null)
+            {
+                _timer.Cancel();
+            }
+
             _timer = null;
             _enabled = false;
         }

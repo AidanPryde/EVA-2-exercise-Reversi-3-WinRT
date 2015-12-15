@@ -5,9 +5,191 @@
     xmlns:local="using:Reversi_WinRT"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:interactions="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="170"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="120"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="1" Margin="0, 30, 0, 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="1" BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="0" Padding="20" Margin="10">
+                <Grid Width="130" Height="80" Margin="-5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Name="player1Lable" Text="Player 1" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap" Margin="-10, -10, 10, 10"></TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Name="player1PointsLable" Text="Points:" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"></TextBlock>
+                    <TextBlock Grid.Row="2" Grid.Column="0" Name="player1TimeLable" Text="Time:" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"></TextBlock>
+
+                    <TextBlock Grid.Row="1" Grid.Column="2" Name="player1Points" Text="{Binding Player1Points}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"></TextBlock>
+                    <TextBlock Grid.Row="2" Grid.Column="2" Name="player1Time" Text="{Binding Player1Time}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"></TextBlock>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Column="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Margin="0, 10, 0, 0" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="0" Name="title" Text="Reversi" Style="{StaticResource HeaderTextBlockStyle}" TextWrapping="NoWrap"></TextBlock>
+                <Button HorizontalAlignment="Center" Grid.Row="2" Command="{Binding PassCommand}" Content="Pass" IsEnabled="{Binding PassButtonEnabled}"></Button>
+                <Button Margin="0, 0, 0, 10" HorizontalAlignment="Center" Grid.Row="4" Command="{Binding PauseCommand}" Content="{Binding PauseText}" IsEnabled="{Binding PauseButtonEnabled}"></Button>
+
+            </Grid>
+            
+            <Border Grid.Column="5" BorderBrush="WhiteSmoke" BorderThickness="1" CornerRadius="0" Padding="20" Margin="10">
+                <Grid Width="130" Height="80" Margin="-5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <TextBlock Grid.Row="0" Grid.Column="0" Name="player2Lable" Text="Player 2" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap" Margin="-10, -10, 10, 10"></TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Name="player2PointsLable" Text="Points:" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"></TextBlock>
+                    <TextBlock Grid.Row="2" Grid.Column="0" Name="player2TimeLable" Text="Time:" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"></TextBlock>
+
+                    <TextBlock Grid.Row="1" Grid.Column="2" Name="player2Points" Text="{Binding Player2Points}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"></TextBlock>
+                    <TextBlock Grid.Row="2" Grid.Column="2" Name="player2Time" Text="{Binding Player2Time}" Style="{StaticResource BaseTextBlockStyle}" TextWrapping="NoWrap"></TextBlock>
+
+                </Grid>
+            </Border>
+        </Grid>
+        
+
+        <Viewbox Grid.Row="1" Grid.Column="1" StretchDirection="Both" Stretch="Uniform">
+            <!-- a tartalom automatikusan zoomolva lesz -->
+            <ItemsControl ItemsSource="{Binding Cells}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapGrid Orientation="Horizontal" MaximumRowsOrColumns="{Binding TableSizeOfCells}" />
+                        <!-- az elemeket egy rácsra helyezzük fel -->
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Command="{Binding PutDownCommand}" CommandParameter="{Binding Index}" Content="{Binding Text}" Foreground="Black" FontSize="56" FontWeight="Bold" Width="100" Height="100">
+                            <!-- a gomb háttérszníét triggerek segítségével állítjuk -->
+                            <interactivity:Interaction.Behaviors>
+                                <interactions:DataTriggerBehavior Binding="{Binding BackColorInt}" Value="0">
+                                    <interactions:ChangePropertyAction PropertyName="Background">
+                                        <interactions:ChangePropertyAction.Value>
+                                            <SolidColorBrush Color="White" />
+                                        </interactions:ChangePropertyAction.Value>
+                                    </interactions:ChangePropertyAction>
+                                </interactions:DataTriggerBehavior>
+                                <interactions:DataTriggerBehavior Binding="{Binding BackColorInt}" Value="1">
+                                    <interactions:ChangePropertyAction PropertyName="Background">
+                                        <interactions:ChangePropertyAction.Value>
+                                            <SolidColorBrush Color="Black" />
+                                        </interactions:ChangePropertyAction.Value>
+                                    </interactions:ChangePropertyAction>
+                                </interactions:DataTriggerBehavior>
+                                <interactions:DataTriggerBehavior Binding="{Binding BackColorInt}" Value="2">
+                                    <interactions:ChangePropertyAction PropertyName="Background">
+                                        <interactions:ChangePropertyAction.Value>
+                                            <SolidColorBrush Color="YellowGreen" />
+                                        </interactions:ChangePropertyAction.Value>
+                                    </interactions:ChangePropertyAction>
+                                </interactions:DataTriggerBehavior>
+                                <!--<interactions:DataTriggerBehavior Binding="{Binding BackColorInt}" Value="3">
+                                    <interactions:ChangePropertyAction PropertyName="Background">
+                                        <interactions:ChangePropertyAction.Value>
+                                            <SolidColorBrush Color="Grey" />
+                                        </interactions:ChangePropertyAction.Value>
+                                    </interactions:ChangePropertyAction>
+                                </interactions:DataTriggerBehavior>-->
+
+                                <interactions:DataTriggerBehavior Binding="{Binding TextColorInt}" Value="0">
+                                    <interactions:ChangePropertyAction PropertyName="Foreground">
+                                        <interactions:ChangePropertyAction.Value>
+                                            <SolidColorBrush Color="White" />
+                                        </interactions:ChangePropertyAction.Value>
+                                    </interactions:ChangePropertyAction>
+                                </interactions:DataTriggerBehavior>
+                                <interactions:DataTriggerBehavior Binding="{Binding TextColorInt}" Value="1">
+                                    <interactions:ChangePropertyAction PropertyName="Foreground">
+                                        <interactions:ChangePropertyAction.Value>
+                                            <SolidColorBrush Color="Black" />
+                                        </interactions:ChangePropertyAction.Value>
+                                    </interactions:ChangePropertyAction>
+                                </interactions:DataTriggerBehavior>
+                                <interactions:DataTriggerBehavior Binding="{Binding TextColorInt}" Value="2">
+                                    <interactions:ChangePropertyAction PropertyName="Foreground">
+                                        <interactions:ChangePropertyAction.Value>
+                                            <SolidColorBrush Color="YellowGreen" />
+                                        </interactions:ChangePropertyAction.Value>
+                                    </interactions:ChangePropertyAction>
+                                </interactions:DataTriggerBehavior>
+                                <!--<interactions:DataTriggerBehavior Binding="{Binding TextColorInt}" Value="3">
+                                    <interactions:ChangePropertyAction PropertyName="Foreground">
+                                        <interactions:ChangePropertyAction.Value>
+                                            <SolidColorBrush Color="Gray" />
+                                        </interactions:ChangePropertyAction.Value>
+                                    </interactions:ChangePropertyAction>
+                                </interactions:DataTriggerBehavior>-->
+                            </interactivity:Interaction.Behaviors>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Viewbox>
 
     </Grid>
+
+
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Label="Play" Icon="Play" Command="{Binding NewGameCommand}" />
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="Load" Icon="Upload" Command="{Binding LoadGameCommand}" />
+                <AppBarButton Label="Save" Icon="Download" Command="{Binding SaveGameCommand}" IsEnabled="{Binding SaveMenuItemEnabled}" />
+                <AppBarButton Label="Rules" Icon="Important" Command="{Binding RulesCommand}" />
+                <AppBarButton Label="About" Icon="More" Command="{Binding AboutCommand}" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>

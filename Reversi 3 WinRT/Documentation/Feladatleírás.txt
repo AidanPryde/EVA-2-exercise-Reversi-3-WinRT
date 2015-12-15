@@ -1,0 +1,46 @@
+3. beadandó feladat: WinRT grafikus felületû alkalmazás
+Közös követelmények:
+• A beadandók dokumentációból, valamint programból állnak, utóbbi csak a
+megfelelõ dokumentáció bemutatásával értékelhetõ. Csak funkcionálisan teljes, a
+feladatnak megfelelõ, önállóan megvalósított, személyesen bemutatott program
+fogadható el.
+• A megvalósításnak felhasználóbarátnak, és könnyen kezelhetõnek kell lennie. A
+szerkezetében törekednie kell az objektumorientált szemlélet megtartására.
+• A programot MVVM architektúrában kell felépíteni, amelyben a megjelenítés
+rétege elkülönül a modellnézettõl, a modelltõl, valamint az adatkezeléstõl. A
+modell és az adatkezelés nem tartalmazhat semmilyen grafikus felületbeli
+osztályra történõ hivatkozást, csak eseményeket küldhet a nézetmodellnek. A
+nézetmodell nem tartalmazhat semmilyen játékbeli adatot, a nézet pedig
+semmilyen háttérkódot.
+• A modell mûködését egységtesztek segítségével kell ellenõrizni. Nem kell teljes
+körû tesztet végezni, azonban a lényeges funkciókat, és azok hatásait ellenõrizni
+kell.
+• A dokumentációnak jól áttekinthetõnek, megfelelõen formázottnak kell lennie,
+tartalmaznia kell a fejlesztõ adatait, a feladatleírást, a feladat elemzését,
+felhasználói eseteit (UML felhasználói esetek diagrammal), a program
+szerkezetének leírását (UML osztálydiagrammal), valamint a tesztesetek leírását.
+A dokumentáció ne tartalmazzon kódrészleteket, illetve képenyõképeket. A
+megjelenõ diagramokat megfelelõ szerkesztõeszköz segítségével kell elõállítani.
+A dokumentációt elektronikusan, PDF formátumban kell leadni.
+
+17. Reversi
+Készítsünk programot, amellyel az alábbi Reversi játékot játszhatjuk.
+A játékot két játékos játssza n × n-es négyzetrácsos táblán fekete és fehér
+korongokkal. Kezdéskor a tábla közepén X alakban két-két korong van elhelyezve
+mindkét színbõl. A játékosok felváltva tesznek le újabb korongokat. A játék
+lényege, hogy a lépés befejezéseként az ellenfél ollóba fogott, azaz két oldalról
+(vízszintesen, függõlegesen vagy átlósan) közrezárt bábuit (egy lépésben akár
+több irányban is) a saját színünkre cseréljük.
+Mindkét játékosnak, minden lépésben ütnie kell. Ha egy állásban nincs olyan
+lépés, amivel a játékos ollóba tudna fogni legalább egy ellenséges korongot,
+passzolnia kell és újra ellenfele lép. A játékosok célja, hogy a játék végére minél
+több saját színû korongjuk legyen a táblán.
+A játék akkor ér véget, ha a tábla megtelik, vagy ha mindkét játékos passzol. A
+játék gyõztese az a játékos, akinek a játék végén több korongja van a táblán. A
+játék döntetlen, ha mindkét játékosnak ugyanannyi korongja van a játék végén.
+A program biztosítson lehetõséget új játék kezdésére a táblaméret megadásával
+(10 × 10, 20 × 20, 30 × 30), játék szüneteltetésére, valamint játék mentésére és
+betöltésére. Ismerje fel, ha vége a játéknak, és jelenítse meg, melyik játékos
+gyõzött. A program folyamatosan jelezze külön-külön a két játékos gondolkodási
+idejét (azon idõk összessége, ami az elõzõ játékos lépésétõl a saját lépéséig tart,
+ezt is mentsük el és töltsük be).

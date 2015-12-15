@@ -3,17 +3,16 @@ using Reversi_WinRT.Model;
 
 using System;
 using System.Collections.ObjectModel;
+using Windows.UI.Core;
 
 namespace Reversi_WinRT.ViewModel
 {
     public class ReversiViewModel : ViewModelBase
     {
-        /// <summary>
-        /// Calculated beforehand to fit the view.
-        /// </summary>
-        private readonly Int32 _applicationDefaultMinimumHeight = 190;
 
         #region Fields
+
+        CoreDispatcher dispatcher;
 
         /// <summary>
         /// The model of the application.
@@ -26,14 +25,14 @@ namespace Reversi_WinRT.ViewModel
         private Boolean _isPlayer1TurnOn;
 
         /// <summary>
-        /// Possibly to (re)set the minimum height of the application, when staring or loading a game.
-        /// </summary>
-        private Int32 _applicationMinimumHeight;
-
-        /// <summary>
         /// Did we saved our game? Used to safe exit.
         /// </summary>
         private Boolean _saveMenuItemEnabled;
+
+        /// <summary>
+        /// The maximum minimum size of or grid in the view, that holds the cells.
+        /// </summary>
+        private Int32 _tableSizeOfCells;
 
         /// <summary>
         /// To set pass button to enabled or disabled.
@@ -61,7 +60,11 @@ namespace Reversi_WinRT.ViewModel
         /// <summary>
         /// To update the status bar with the players points.
         /// </summary>
-        private String _gamePoints;
+        private Int32 _player1Points;
+        /// <summary>
+        /// To update the status bar with the players points.
+        /// </summary>
+        private Int32 _player2Points;
 
         /// <summary>
         /// To follow if we can safly exit the game.
@@ -90,57 +93,11 @@ namespace Reversi_WinRT.ViewModel
 
         public ObservableCollection<ReversiCell> Cells { get; private set; }
 
-        public Int32 ApplicationHeight
-        {
-            get;
-
-            private set;
-        }
-
-        public Int32 ApplicationWidth
-        {
-            get;
-
-            private set;
-        }
-
-        public Int32 ApplicationMinimumHeight
-        {
-            get
-            {
-                return _applicationMinimumHeight;
-            }
-        }
-
         public Boolean SaveMenuItemEnabled
         {
             get
             {
                 return _saveMenuItemEnabled;
-            }
-        }
-
-        public Boolean SmallMenuItemEnabled
-        {
-            get
-            {
-                return !(SmallMenuItemChecked);
-            }
-        }
-
-        public Boolean MediumMenuItemEnabled
-        {
-            get
-            {
-                return !(MediumMenuItemChecked);
-            }
-        }
-
-        public Boolean LargeMenuItemEnabled
-        {
-            get
-            {
-                return !(LargeMenuItemChecked);
             }
         }
 
@@ -201,6 +158,8 @@ namespace Reversi_WinRT.ViewModel
             }
         }
 
+        public Int32 TableSizeOfCells { get { return _tableSizeOfCells; } }
+
         public Boolean PassButtonEnabled { get { return _passButtonEnabled; } }
 
         public Boolean PauseButtonEnabled { get { return _pauseButtonEnabled; } }
@@ -211,7 +170,9 @@ namespace Reversi_WinRT.ViewModel
 
         public Int32 Player2Time { get { return _player2Time; } }
 
-        public String GamePoints { get { return _gamePoints; } }
+        public Int32 Player1Points { get { return _player1Points; } }
+
+        public Int32 Player2Points { get { return _player2Points; } }
 
         public Boolean Saved
         {
@@ -264,9 +225,6 @@ namespace Reversi_WinRT.ViewModel
 
             Cells = new ObservableCollection<ReversiCell>();
 
-            _applicationMinimumHeight = _applicationDefaultMinimumHeight;
-            OnPropertyChanged("ApplicationMinimumHeight");
-
             _saved = true;
 
             _saveMenuItemEnabled = false;
@@ -285,8 +243,12 @@ namespace Reversi_WinRT.ViewModel
             _player2Time = 0;
             OnPropertyChanged("Player2Time");
 
-            _gamePoints = "";
-            OnPropertyChanged("GamePoints");
+            _player1Points = 0;
+            OnPropertyChanged("Player1Points");
+            _player2Points = 0;
+            OnPropertyChanged("Player2Points");
+
+            dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
         }
 
         #endregion
@@ -322,6 +284,9 @@ namespace Reversi_WinRT.ViewModel
                     }
                 }
             }
+
+            _tableSizeOfCells = _model.ActiveTableSize;
+            OnPropertyChanged("TableSizeOfCells");
         }
 
         /// <summary>
@@ -433,6 +398,7 @@ namespace Reversi_WinRT.ViewModel
             OnPropertyChanged("PauseButtonEnabled");
 
             _saved = true;
+
             _saveMenuItemEnabled = false;
             OnPropertyChanged("SaveMenuItemEnabled");
         }
@@ -442,17 +408,25 @@ namespace Reversi_WinRT.ViewModel
         /// </summary>
         /// <param name="sender">The model. We do not use this.</param>
         /// <param name="e">The data, which help us update the view.</param>
-        private void Model_UpdatePlayerTime(object sender, ReversiUpdatePlayerTimeEventArgs e)
+        private async void Model_UpdatePlayerTime(object sender, ReversiUpdatePlayerTimeEventArgs e)
         {
             if (e.IsPlayer1TimeNeedUpdate)
             {
-                _player1Time = e.NewTime;
-                OnPropertyChanged("Player1Time");
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                    () =>
+                    {
+                        _player1Time = e.NewTime;
+                        OnPropertyChanged("Player1Time");
+                    });
             }
             else
             {
-                _player2Time = e.NewTime;
-                OnPropertyChanged("Player2Time");
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                    () =>
+                    {
+                        _player2Time = e.NewTime;
+                        OnPropertyChanged("Player2Time");
+                    });
             }
         }
 
@@ -464,11 +438,14 @@ namespace Reversi_WinRT.ViewModel
         private void Model_UpdateTable(object sender, ReversiUpdateTableEventArgs e)
         {
             _saved = false;
+
             _saveMenuItemEnabled = true;
             OnPropertyChanged("SaveMenuItemEnabled");
 
-            _gamePoints = "Player 1: " + e.Player1Points + " -- Player 2: " + e.Player2Points;
-            OnPropertyChanged("GamePoints");
+            _player1Points = e.Player1Points;
+            OnPropertyChanged("Player1Points");
+            _player2Points = e.Player2Points;
+            OnPropertyChanged("Player2Points");
 
             _isPlayer1TurnOn = e.IsPlayer1TurnOn;
 
